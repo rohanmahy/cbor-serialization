@@ -9,8 +9,8 @@ number:
 date:
 consensus: true
 v: 3
-area: AREA
-workgroup: WG Working Group
+area: "Applications and Real-Time"
+workgroup: "Concise Binary Object Representation Maintenance and Extensions"
 keyword:
  - cbor
  - cde
@@ -18,12 +18,12 @@ keyword:
  - serialization
  - serialisation
 venue:
-  group: WG
-  type: Working Group
-  mail: WG@example.com
-  arch: https://example.com/WG
-  github: USER/REPO
-  latest: https://example.com/LATEST
+  group: "Concise Binary Object Representation Maintenance and Extensions"
+  type: "Working Group"
+  mail: "cbor@ietf.org"
+  arch: "https://www.ietf.org/mail-archive/web/cbor/current/maillist.html"
+  github: "rohanmahy/cbor-serialization"
+  latest: "https://rohanmahy.github.io/cbor-serialization/draft-mahy-cbor-serialization.html"
 
 author:
  -
@@ -60,9 +60,9 @@ Some reasons for this confusion include the following.
 
 # Existing CBOR Serializations
 
-The following CBOR serialization are defined in {{!RFC8949}}. Their definitions are clarified here. 
+The following CBOR serialization are defined in {{!RFC8949}}. Their definitions are clarified here.
 
-CBOR defines three specific serializations: common, basic. These build on each 
+CBOR defines three specific serializations: common, basic. These build on each
 
 ## Common Serialization
 
