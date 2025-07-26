@@ -35,7 +35,7 @@ normative:
 
 informative:
 
-...
+
 
 --- abstract
 
@@ -66,21 +66,35 @@ CBOR defines three specific serializations: common, basic. These build on each
 
 ## Common Serialization
 
-- integers are always expressed using the smallest size representation possible.
+- integers and tags are always expressed using the smallest size representation possible.
 - integers smaller than 2^xx MUST NOT be expressed as bigints. use the corresponding integer types instead.
-- 
+- the major byte for definite-length byte strings, text strings, arrays, and maps is always expressed using the smallest number of bytes that can represent that length.
+- floating point values are expressed using smallest of the three sizes (16-bits, 32-bits, or 64-bits) which can represent that value.
+- Unlike for integers, common serialization does not place any restriction on the expression of bigfloats or bigfractions.
+- floating point numbers which are mathematically integers (ex: 5.0 or -3.0) are  expressed as floating point numbers.
+- Floating point negative zero (-0.0) is distinct from floating point positive zero (0.0)
+- Floating point NaN values with payloads are distinct from one another.
+
 
 ## Basic Serialization
 
+Basic serialization did not exist in {{!RFC8949}}. It includes all the requirements of Common serialization and adds one more.
 
 - indefinite encoding is forbidden
 
 ## Ordered Serialization
 
-This was formally called "Deterministic Encoding". This is confusing as the community often described all three serializations collectively as deterministic encoding. 
+This was formally called "Deterministic Encoding" (which was confusing as the community often described any of these three serializations, and occasionally application-defined proffiles, collectively as CBOR Deterministic Encoding or CDE).
 
-- CBOR maps are sorted lexicographically by the CBOR serilization of their map keys. See Section 4.2.1 of {{!RFC8949}}.
+Ordered Serialization includes all the requirements of Basic Serialization and adds one additional requirements.
 
+- CBOR maps are sorted by lexicographically by the ordered CBOR serialization of their map keys. See Section 4.2.1 of {{!RFC8949}}.
+
+> Note that a CBOR map key can be another map key. Therefore, to use ordered serialization, a CBOR map key must be (recursively) represented using Ordered Serialization.
+
+# Application-specific Serialization Profiles
+
+Applications can define their own serialization rules, which may build from any of the three concrete serializations defined in this document, or from none of them.
 
 
 # Security Considerations
