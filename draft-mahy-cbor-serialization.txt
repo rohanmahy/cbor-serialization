@@ -72,11 +72,12 @@ Table of Contents
      3.1.  Common Serialization
      3.2.  Basic Serialization
      3.3.  Ordered Serialization
-   4.  Security Considerations
-   5.  IANA Considerations
-   6.  References
-     6.1.  Normative References
-     6.2.  Informative References
+   4.  Application-specific Serialization Profiles
+   5.  Security Considerations
+   6.  IANA Considerations
+   7.  References
+     7.1.  Normative References
+     7.2.  Informative References
    Acknowledgments
    Author's Address
 
@@ -118,37 +119,73 @@ Table of Contents
 
 3.1.  Common Serialization
 
-   *  integers are always expressed using the smallest size
+   *  integers and tags are always expressed using the smallest size
       representation possible.
 
    *  integers smaller than 2^xx MUST NOT be expressed as bigints. use
       the corresponding integer types instead.
 
+   *  the major byte for definite-length byte strings, text strings,
+      arrays, and maps is always expressed using the smallest number of
+      bytes that can represent that length.
+
+   *  floating point values are expressed using smallest of the three
+      sizes (16-bits, 32-bits, or 64-bits) which can represent that
+      value.
+
+   *  Unlike for integers, common serialization does not place any
+      restriction on the expression of bigfloats or bigfractions.
+
+   *  floating point numbers which are mathematically integers (ex: 5.0
+      or -3.0) are expressed as floating point numbers.
+
+   *  Floating point negative zero (-0.0) is distinct from floating
+      point positive zero (0.0)
+
+   *  Floating point NaN values with payloads are distinct from one
+      another.
 
 3.2.  Basic Serialization
+
+   Basic serialization did not exist in [RFC8949].  It includes all the
+   requirements of Common serialization and adds one more.
 
    *  indefinite encoding is forbidden
 
 3.3.  Ordered Serialization
 
-   This was formally called "Deterministic Encoding".  This is confusing
-   as the community often described all three serializations
-   collectively as deterministic encoding.
+   This was formally called "Deterministic Encoding" (which was
+   confusing as the community often described any of these three
+   serializations, and occasionally application-defined proffiles,
+   collectively as CBOR Deterministic Encoding or CDE).
 
-   *  CBOR maps are sorted lexicographically by the CBOR serilization of
-      their map keys.  See Section 4.2.1 of [RFC8949].
+   Ordered Serialization includes all the requirements of Basic
+   Serialization and adds one additional requirements.
 
-4.  Security Considerations
+   *  CBOR maps are sorted by lexicographically by the ordered CBOR
+      serialization of their map keys.  See Section 4.2.1 of [RFC8949].
+
+      Note that a CBOR map key can be another map key.  Therefore, to
+      use ordered serialization, a CBOR map key must be (recursively)
+      represented using Ordered Serialization.
+
+4.  Application-specific Serialization Profiles
+
+   Applications can define their own serialization rules, which may
+   build from any of the three concrete serializations defined in this
+   document, or from none of them.
+
+5.  Security Considerations
 
    TODO Security
 
-5.  IANA Considerations
+6.  IANA Considerations
 
    This document has no IANA actions.
 
-6.  References
+7.  References
 
-6.1.  Normative References
+7.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -164,7 +201,7 @@ Table of Contents
               DOI 10.17487/RFC8949, December 2020,
               <https://www.rfc-editor.org/rfc/rfc8949>.
 
-6.2.  Informative References
+7.2.  Informative References
 
    [RFC7049]  Bormann, C. and P. Hoffman, "Concise Binary Object
               Representation (CBOR)", RFC 7049, DOI 10.17487/RFC7049,
