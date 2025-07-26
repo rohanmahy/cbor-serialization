@@ -59,9 +59,9 @@ Some reasons for this confusion include the following.
 
 # Existing CBOR Serializations
 
-The following CBOR serialization are defined in {{!RFC8949}}. Their definitions are clarified here.
+The following CBOR serializations are defined in {{!RFC8949}}. Their definitions are clarified here.
 
-CBOR defines three specific serializations: common, basic. These build on each
+CBOR defines three specific serializations: common, basic. These build on each other.
 
 ## Common Serialization
 
