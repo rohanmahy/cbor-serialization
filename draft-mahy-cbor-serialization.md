@@ -28,7 +28,6 @@ venue:
 author:
  -
     fullname: Rohan Mahy
-    organization:
     email: rohan.ietf@gmail.com
 
 normative:
