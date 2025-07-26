@@ -1,0 +1,180 @@
+
+
+
+
+WG Working Group                                                 R. Mahy
+Internet-Draft                                              26 July 2025
+Intended status: Informational                                          
+Expires: 27 January 2026
+
+
+      Clarifying Serialization options in the Common Binary Object
+                         Representation (CBOR)
+                  draft-mahy-cbor-serialization-latest
+
+Abstract
+
+   This document clarifies the serialization options defined in the CBOR
+   specification and presents them in a concise way.
+
+About This Document
+
+   This note is to be removed before publishing as an RFC.
+
+   The latest revision of this draft can be found at
+   https://example.com/LATEST.  Status information for this document may
+   be found at https://datatracker.ietf.org/doc/draft-mahy-cbor-
+   serialization/.
+
+   Discussion of this document takes place on the WG Working Group
+   mailing list (mailto:WG@example.com), which is archived at
+   https://example.com/WG.
+
+   Source for this draft and an issue tracker can be found at
+   https://github.com/USER/REPO.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 27 January 2026.
+
+Copyright Notice
+
+   Copyright (c) 2025 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+Table of Contents
+
+   1.  Introduction
+   2.  Conventions and Definitions
+   3.  Existing CBOR Serializations
+     3.1.  Common Serialization
+     3.2.  Basic Serialization
+     3.3.  Ordered Serialization
+   4.  Security Considerations
+   5.  IANA Considerations
+   6.  References
+     6.1.  Normative References
+     6.2.  Informative References
+   Acknowledgments
+   Author's Address
+
+1.  Introduction
+
+   The serialization options for CBOR have been a source of confusion
+   both among implementers and inside the IETF community.  Some reasons
+   for this confusion include the following.
+
+   *  Map ordering recommendations changed between [RFC7049] and
+      [RFC8949].
+
+   *  The non-normative nature of some of the guidance.
+
+   *  Ambiguous language such as "preferred" used inside descriptions in
+      the serializations.
+
+   *  A large number of terms, some of which share the same initialisms
+      (ex: common deterministic encoding, CBOR deterministic encoding)
+      or include the name of one of the serializations.
+
+   *  the verbosity of the descriptions
+
+2.  Conventions and Definitions
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+3.  Existing CBOR Serializations
+
+   The following CBOR serialization are defined in [RFC8949].  Their
+   definitions are clarified here.
+
+   CBOR defines three specific serializations: common, basic.  These
+   build on each
+
+3.1.  Common Serialization
+
+   *  integers are always expressed using the smallest size
+      representation possible.
+
+   *  integers smaller than 2^xx MUST NOT be expressed as bigints. use
+      the corresponding integer types instead.
+
+
+3.2.  Basic Serialization
+
+   *  indefinite encoding is forbidden
+
+3.3.  Ordered Serialization
+
+   This was formally called "Deterministic Encoding".  This is confusing
+   as the community often described all three serializations
+   collectively as deterministic encoding.
+
+   *  CBOR maps are sorted lexicographically by the CBOR serilization of
+      their map keys.  See Section 4.2.1 of [RFC8949].
+
+4.  Security Considerations
+
+   TODO Security
+
+5.  IANA Considerations
+
+   This document has no IANA actions.
+
+6.  References
+
+6.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+   [RFC8949]  Bormann, C. and P. Hoffman, "Concise Binary Object
+              Representation (CBOR)", STD 94, RFC 8949,
+              DOI 10.17487/RFC8949, December 2020,
+              <https://www.rfc-editor.org/rfc/rfc8949>.
+
+6.2.  Informative References
+
+   [RFC7049]  Bormann, C. and P. Hoffman, "Concise Binary Object
+              Representation (CBOR)", RFC 7049, DOI 10.17487/RFC7049,
+              October 2013, <https://www.rfc-editor.org/rfc/rfc7049>.
+
+Acknowledgments
+
+   TODO acknowledge.
+
+Author's Address
+
+   Rohan Mahy
+   Email: rohan.ietf@gmail.com
