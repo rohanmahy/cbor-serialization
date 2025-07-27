@@ -3,19 +3,20 @@
 
 
 Concise Binary Object Representation Maintenance and Extensions  R. Mahy
-Internet-Draft                                              26 July 2025
+Internet-Draft                                              27 July 2025
 Intended status: Informational                                          
-Expires: 27 January 2026
+Expires: 28 January 2026
 
 
-      Clarifying Serialization options in the Common Binary Object
+       Standard Serialization options in the Common Binary Object
                          Representation (CBOR)
                   draft-mahy-cbor-serialization-latest
 
 Abstract
 
-   This document clarifies the serialization options defined in the CBOR
-   specification and presents them in a concise way.
+   This document renames and clarifies the serialization options defined
+   in the CBOR specification and adds one additional serialization
+   option, presenting them concisely and clearly.
 
 About This Document
 
@@ -51,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 January 2026.
+   This Internet-Draft will expire on 28 January 2026.
 
 Copyright Notice
 
@@ -71,20 +72,28 @@ Table of Contents
 
    1.  Introduction
    2.  Conventions and Definitions
-   3.  Existing CBOR Serializations
-     3.1.  Common Serialization
-     3.2.  Basic Serialization
+   3.  Recommended CBOR Serializations
+     3.1.  Compact Serialization
+     3.2.  Definite Serialization
      3.3.  Ordered Serialization
-   4.  Application-specific Serialization Profiles
-   5.  Security Considerations
-   6.  IANA Considerations
-   7.  References
-     7.1.  Normative References
-     7.2.  Informative References
+   4.  Discouraged Serializations
+   5.  Application-specific Serialization Profiles
+   6.  Security Considerations
+   7.  IANA Considerations
+   8.  References
+     8.1.  Normative References
+     8.2.  Informative References
    Acknowledgments
    Author's Address
 
 1.  Introduction
+
+   The CBOR specification [RFC8949] allows applications to define their
+   own profiles of CBOR, including creating their own serialization
+   rules.  It also defines two specific serialization options
+   ("Preferred Serialization" and "Core Deterministic Encoding") and
+   gives a new name ("Length-First Map Key Ordering") for the
+   serialization described in [RFC7049].
 
    The serialization options for CBOR have been a source of confusion
    both among implementers and inside the IETF community.  Some reasons
@@ -93,16 +102,20 @@ Table of Contents
    *  Map ordering recommendations changed between [RFC7049] and
       [RFC8949].
 
+   *  [RFC8949] mixes advice for serialization in application-defined
+      profiles and serializations in the standard in the same section.
+
    *  The non-normative nature of some of the guidance.
 
-   *  Ambiguous language such as "preferred" used inside descriptions in
-      the serializations.
+   *  Ambiguous language such as "preferred" and "might need to" used
+      inside descriptions of the serializations.
 
    *  A large number of terms, some of which share the same initialisms
-      (ex: common deterministic encoding, CBOR deterministic encoding)
-      or include the name of one of the serializations.
+      (ex: common deterministic encoding, core deterministic encoding,
+      and CBOR deterministic encoding) or include the name of one of the
+      serializations in the description of other serializations.
 
-   *  the verbosity of the descriptions
+   *  The verbosity of the descriptions
 
 2.  Conventions and Definitions
 
@@ -112,83 +125,118 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
-3.  Existing CBOR Serializations
+3.  Recommended CBOR Serializations
 
-   The following CBOR serializations are defined in [RFC8949].  Their
-   definitions are clarified here.
+   This document creates new names for "Preferred Serialization" and
+   "Core Deterministic Encoding" serializations defined in [RFC8949],
+   and defines a third serialization.  Each of these serializations
+   builds on the previous serialization.  These three serializations are
+   suitable for general use and can be referenced by application
+   profiles and other specifications.
 
-   CBOR defines three specific serializations: common, basic.  These
-   build on each other.
+   *  *Compact Serialization*: Uses the most compact size, form, or
+      variant of every CBOR major type, and forbids bigints that can be
+      expressed as integers.
 
-3.1.  Common Serialization
+   *  *Definite Serialization*: Includes the requirements of Compact
+      Serialization, but only allows definite-length encoding.
 
-   *  integers and tags are always expressed using the smallest size
-      representation possible.
+   *  *Sorted Serialization*: Includes the requirements of Definite
+      Serialization, but also sorts map keys according to Section 4.2.1
+      bullet point 3 of [RFC8949].
 
-   *  integers smaller than 2^xx MUST NOT be expressed as bigints. use
-      the corresponding integer types instead.
+   Applications may require one of these serializations or define their
+   own (either from scratch or based on any of the standard
+   serializations).
 
-   *  the major byte for definite-length byte strings, text strings,
-      arrays, and maps is always expressed using the smallest number of
-      bytes that can represent that length.
+3.1.  Compact Serialization
 
-   *  floating point values are expressed using smallest of the three
+   The Compact Serialization option was defined in [RFC8949], where it
+   was referred to as Preferred Serialization.
+
+   Below is a summary of the rules for Compact Serialization:
+
+   *  CBOR integer and tag types are always expressed using the smallest
+      size representation possible.
+
+   *  Unsigned integers smaller than 2^64 or negative integers smaller
+      than -(2^64 + 1) MUST NOT be expressed as bigints.  They are
+      encoded using the corresponding integer types instead.
+
+   *  The byte containing the major type for definite-length byte
+      strings, text strings, arrays, and maps is always the selected to
+      represent the length using the smallest number of bytes possible.
+
+   *  Floating point values are expressed using smallest of the three
       sizes (16-bits, 32-bits, or 64-bits) which can represent that
-      value.
+      value.  This requirement includes using the smallest
+      representation of NaN values.
 
-   *  Unlike for integers, common serialization does not place any
-      restriction on the expression of bigfloats or bigfractions.
-
-   *  floating point numbers which are mathematically integers (ex: 5.0
+   *  Floating point numbers which are mathematically integers (ex: 5.0
       or -3.0) are expressed as floating point numbers.
 
    *  Floating point negative zero (-0.0) is distinct from floating
-      point positive zero (0.0)
+      point positive zero (0.0).
 
    *  Floating point NaN values with payloads are distinct from one
       another.
 
-3.2.  Basic Serialization
+   *  Unlike for integers, Compact Serialization does not place any
+      restriction on the expression of bigfloats or decimal fractions.
 
-   Basic serialization did not exist in [RFC8949].  It includes all the
-   requirements of Common serialization and adds one more.
+3.2.  Definite Serialization
 
-   *  indefinite encoding is forbidden
+   This document defines Definite Serialization, which did not exist in
+   [RFC8949].  It includes all the requirements of Compact serialization
+   and adds one more requirement:
+
+   *  Indefinite-length encoding is forbidden.
 
 3.3.  Ordered Serialization
 
-   This was formally called "Deterministic Encoding" (which was
+   This was formerly called "Deterministic Encoding" (which was
    confusing as the community often described any of these three
-   serializations, and occasionally application-defined proffiles,
-   collectively as CBOR Deterministic Encoding or CDE).
+   serializations, and occasionally application-defined profiles,
+   collectively as CBOR Deterministic Encoding, Core Deterministic
+   Encoding, or Common Deterministic; or using the initialism CDE).
 
-   Ordered Serialization includes all the requirements of Basic
-   Serialization and adds one additional requirements.
+   Ordered Serialization includes all the requirements of Definite
+   Serialization and adds one additional requirement:
 
-   *  CBOR maps are sorted by lexicographically by the ordered CBOR
-      serialization of their map keys.  See Section 4.2.1 of [RFC8949].
+   *  CBOR maps are sorted bytewise lexicographically by the CBOR
+      Ordered Serialization of their map keys.  See Section 4.2.1 of
+      [RFC8949] bullet point 3 for examples of correctly sorted map
+      keys.
 
-      Note that a CBOR map key can be another map key.  Therefore, to
-      use ordered serialization, a CBOR map key must be (recursively)
-      represented using Ordered Serialization.
+      Note that a CBOR map key can be another map.  Therefore, to use
+      ordered serialization, a CBOR map key which contains maps must be
+      processed recursively and itself represented using Ordered
+      Serialization.
 
-4.  Application-specific Serialization Profiles
+4.  Discouraged Serializations
+
+   [RFC7049] defined a form of serialization similar to Ordered
+   Serialization, but which used a different sorting algorithm.  It is
+   now referred to as Length-First Map Key Ordering Serialization.  Use
+   of Length-First Map Key Ordering Serialization is discouraged.
+
+5.  Application-specific Serialization Profiles
 
    Applications can define their own serialization rules, which may
    build from any of the three concrete serializations defined in this
    document, or from none of them.
 
-5.  Security Considerations
+6.  Security Considerations
 
    TODO Security
 
-6.  IANA Considerations
+7.  IANA Considerations
 
    This document has no IANA actions.
 
-7.  References
+8.  References
 
-7.1.  Normative References
+8.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -204,7 +252,7 @@ Table of Contents
               DOI 10.17487/RFC8949, December 2020,
               <https://www.rfc-editor.org/rfc/rfc8949>.
 
-7.2.  Informative References
+8.2.  Informative References
 
    [RFC7049]  Bormann, C. and P. Hoffman, "Concise Binary Object
               Representation (CBOR)", RFC 7049, DOI 10.17487/RFC7049,
